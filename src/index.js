@@ -2,20 +2,22 @@ export * from "discord.js";
 import { Client } from "discord.js";
 import initializeDefaults from "./util/initializeDefaults";
 import commandHandler from "./commandHandler";
-import loadCommands from "./util/loadCommands";
+import loadCommands from "./loadCommands";
+import loadEvents from "./loadEvents";
 
 const defaultConfig = {
+  prefix: "!",
   intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS"],
   embedColor: 0x379c6f,
   helpCommand: true,
   debugMessages: true,
-  prefix: "!",
+  noCommandMessage: true,
 };
 
 export async function createBot(config) {
   let bot = {};
   config = initializeDefaults(defaultConfig, config);
-  const commands = loadCommands("directory-here");
+  const commands = await loadCommands("directory-here");
 
   bot.client = new Client({
     intents: config.intents,
@@ -27,8 +29,18 @@ export async function createBot(config) {
 
   bot.client.on("message", async (message) => {
     if (!message.content.trim().startsWith(this.prefix)) return;
-    commandHandler(message, config.prefix, commands, bot);
+    commandHandler(
+      message,
+      config.prefix,
+      commands,
+      config.debugMessages,
+      config.noCommandMessage,
+      config.helpCommand,
+      bot
+    );
   });
+
+  loadEvents();
 
   bot.client.login(config.token.toString().trim());
   return bot;
