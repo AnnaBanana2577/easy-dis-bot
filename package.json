@@ -9,7 +9,12 @@
   },
   "keywords": ["discord bot"],
   "author": "AnnaBanana2577",
-  "license": "ISC",
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/AnnaBanana2577/easy-dis-bot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnnaBanana2577/easy-dis-bot.git"
+  },
   "dependencies": {
     "discord.js": "^13.6.0"
   }
