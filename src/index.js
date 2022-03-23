@@ -1,71 +1,35 @@
-import { Client } from "discord.js";
 export * from "discord.js";
+import { Client } from "discord.js";
+import initializeDefaults from "./util/initializeDefaults";
+import commandHandler from "./commandHandler";
+import loadCommands from "./util/loadCommands";
 
-export class Bot {
-  constructor(token, prefix, help = true, debug = true) {
-    this.token = token;
-    this.prefix = prefix;
-    this.help = help;
+const defaultConfig = {
+  intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS"],
+  embedColor: 0x379c6f,
+  helpCommand: true,
+  debugMessages: true,
+  prefix: "!",
+};
 
-    this.commands = [];
+export async function createBot(config) {
+  let bot = {};
+  config = initializeDefaults(defaultConfig, config);
+  const commands = loadCommands("directory-here");
 
-    this.client = new Client({
-      intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS"],
-    });
+  bot.client = new Client({
+    intents: config.intents,
+  });
 
-    this.client.on("ready", () => {
-      console.log(`Logged in as ${this.client.user.tag}`);
-    });
+  bot.client.on("ready", () => {
+    console.log(`Logged in as ${bot.client.user.tag}`);
+  });
 
-    this.client.on("message", async (message) => {
-      const args = message.content
-        .slice(this.prefix.length)
-        .trim()
-        .split(/ +/g);
-      const command = args.shift().toLowerCase();
+  bot.client.on("message", async (message) => {
+    if (!message.content.trim().startsWith(this.prefix)) return;
+    commandHandler(message, config.prefix, commands, bot);
+  });
 
-      if (!message.content.startsWith(this.prefix)) return;
-
-      if (help && (command == "help" || "commands" || "cmds")) {
-        let helpFields = [];
-        this.commands.forEach((cmd) =>
-          helpFields.push({
-            name: cmd.name,
-            value: cmd.description,
-          })
-        );
-
-        console.log(helpFields);
-
-        let helpEmbed = {
-          color: 0x379c6f,
-          title: "Available Commands",
-          fields: helpFields,
-          footer: {
-            text: message.guild.name,
-            icon_url: message.guild.iconURL(),
-          },
-        };
-
-        message.channel.send({ embeds: [helpEmbed] });
-      }
-
-      //Add command checker and executer here
-    });
-
-    //Add event handler here too
-  }
-
-  addCommand(name, aliases, handler, description = "") {
-    this.commands.push({
-      name: name,
-      aliases: aliases,
-      handler: handler,
-      description: description,
-    });
-  }
-
-  start() {
-    this.client.login(this.token.toString().trim());
-  }
+  bot.client.login(config.token.toString().trim());
+  return bot;
 }
