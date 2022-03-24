@@ -23,7 +23,7 @@ export default function commandHandler(
 
   let isCommandFound = false;
   commands.forEach((cmd) => {
-    if (cmd.name == command || cmd.aliases.includes(command)) {
+    if (cmd.name.toLowerCase() == command || cmd.aliases.includes(command)) {
       isCommandFound = true;
 
       //Add check if arguments work
@@ -41,7 +41,10 @@ export default function commandHandler(
           },
         };
 
-        if (debugMessages) message.channel.send({ embeds: [errorMessage] });
+        if (debugMessages) {
+          message.channel.send({ embeds: [errorMessage] });
+          console.log(err);
+        }
       }
     }
   });

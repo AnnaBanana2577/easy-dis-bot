@@ -6,6 +6,7 @@ import loadCommands from "./loadCommands";
 import loadEvents from "./loadEvents";
 
 const defaultConfig = {
+  //token: "token here"
   prefix: "!",
   intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS"],
   embedColor: 0x379c6f,
@@ -14,7 +15,7 @@ const defaultConfig = {
   noCommandMessage: true,
 };
 
-export async function createBot(config) {
+export default async function createBot(config) {
   let bot = {};
   config = initializeDefaults(defaultConfig, config);
   const commands = await loadCommands("directory-here");
