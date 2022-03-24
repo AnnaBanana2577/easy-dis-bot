@@ -1,5 +1,5 @@
 export default function advancedSplitString(string) {
-  var elements = string.split(/([^\"]\S*|\".+?\")\s*/),
+  let elements = string.split(/([^\"]\S*|\".+?\")\s*/),
     matches = [];
   for (index in elements) {
     if (elements[index].length > 0) {

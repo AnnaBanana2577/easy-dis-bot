@@ -1,3 +1,6 @@
 export default function getEmbedFooter() {
-  return {};
+  return {
+    text: "Some footer text here",
+    icon_url: "https://i.imgur.com/AfFp7pu.png",
+  };
 }

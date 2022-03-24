@@ -27,7 +27,7 @@ export default function commandHandler(
           title: `Error executing ${cmd.name}`,
           description: `${err}`,
           color: 0xff0000,
-          footer: getEmbedFooter(),
+          footer: getEmbedFooter(message.guild),
         };
         message.channel.send({ embeds: [] });
       }
