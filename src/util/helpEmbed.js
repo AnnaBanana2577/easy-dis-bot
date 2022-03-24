@@ -1,34 +1,32 @@
-export default function helpEmbed(message, command, args, prefix) {
+import sendEmbed from "../helpers/sendEmbed.js";
+
+export default function helpEmbed(message, args, bot) {
+  //If 1 argument, display help for that command
   if (args.length == 1) {
+    //Add help for single command
+    return;
   }
 
+  //If invalid Artguments
   if (args.length !== 0) {
-    return {
-      title: `Invalid arguments`,
-      description: "Use `!help` or `!help <command>`",
-      color: 0xff0000,
-      footer: {
-        text: message.guild.name,
-        icon_url: message.guid.icon_url,
-      },
-    };
+    sendEmbed(message, "Invalid Arguments", "Use `!help` or `!help <command>`");
+    return;
+  }
+
+  //Assume just !help or !commands was used
+  if (bot.commands.length == 0) {
+    sendEmbed(message, "I Have No Commands Currently");
+    return;
   }
 
   let helpFields = [];
 
-  commands.forEach((cmd) => {
+  bot.commands.forEach((cmd) => {
     helpFields.push({
-      name: `${prefix}${cmd.name}`,
+      name: `${bot.config.prefix}${cmd.name}`,
       value: `${cmd.description ? `${cmd.description}` : "No description"}`,
     });
   });
 
-  const helpMessage = {
-    title: "Available Commands",
-    fields: helpFields,
-    footer: {
-      text: message.guid.name,
-      icon_url: message.guild.icon_url,
-    },
-  };
+  sendEmbed(message, "Available Commands", "", helpFields);
 }
