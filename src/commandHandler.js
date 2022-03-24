@@ -1,11 +1,11 @@
 import advancedSplitString from "./util/advancedSplitString";
-import getEmbedFooter from "./util/getEmbedFooter";
+import helpEmbed from "./util/helpEmbed";
 
 export default function commandHandler(
   message,
   prefix,
   commands,
-  debug,
+  debugMessages,
   noCommandMessage,
   helpCommand,
   bot
@@ -15,11 +15,19 @@ export default function commandHandler(
   const args = advancedSplitString(argsString);
   const command = args.shift().toLowerCase();
 
-  let isCommandFound = false;
+  if (command == ("help" || "commands") && helpCommand) {
+    const helpMessage = helpEmbed(message, command, args, prefix);
+    message.channel.send({ embeds: [helpMessage] });
+    return;
+  }
 
+  let isCommandFound = false;
   commands.forEach((cmd) => {
     if (cmd.name == command || cmd.aliases.includes(command)) {
       isCommandFound = true;
+
+      //Add check if arguments work
+
       try {
         cmd.execute(channel);
       } catch (err) {
@@ -27,9 +35,13 @@ export default function commandHandler(
           title: `Error executing ${cmd.name}`,
           description: `${err}`,
           color: 0xff0000,
-          footer: getEmbedFooter(message.guild),
+          footer: {
+            text: message.guid.name,
+            icon_url: message.guid.icon_url,
+          },
         };
-        message.channel.send({ embeds: [] });
+
+        if (debugMessages) message.channel.send({ embeds: [errorMessage] });
       }
     }
   });

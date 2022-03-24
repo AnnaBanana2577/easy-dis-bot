@@ -28,7 +28,7 @@ export async function createBot(config) {
   });
 
   bot.client.on("message", async (message) => {
-    if (!message.content.trim().startsWith(this.prefix)) return;
+    if (!message.content.trim().startsWith(config.prefix)) return;
     commandHandler(
       message,
       config.prefix,
