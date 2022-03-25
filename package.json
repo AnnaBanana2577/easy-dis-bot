@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node src/index.js"
   },
-  "keywords": ["discord bot"],
+  "keywords": [
+    "discord bot"
+  ],
   "author": "AnnaBanana2577",
   "license": "GPL-3.0",
   "homepage": "https://github.com/AnnaBanana2577/easy-dis-bot",

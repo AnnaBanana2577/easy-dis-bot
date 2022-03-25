@@ -14,12 +14,17 @@ export default function commandHandler(message, bot) {
 
   //Check if command is ping
   if (command == "ping" && bot.config.pingCommand) {
+    message.channel.send(
+      `🏓Latency is ${
+        Date.now() - message.createdTimestamp
+      }ms. API Latency is ${Math.round(bot.client.ws.ping)}ms`
+    );
     return;
   }
 
   //Check if command was help or commands
   if ((command == "help" || command == "commands") && bot.config.helpCommand) {
-    helpEmbed(message, args, bot);
+    helpEmbed(message, command, args, bot);
     return;
   }
 
@@ -29,7 +34,17 @@ export default function commandHandler(message, bot) {
     if (cmd.name.toLowerCase() == command || cmd.aliases.includes(command)) {
       isCommandFound = true;
 
-      //Add check if arguments work
+      if (args.length !== cmd.arguments.length) {
+        let cmdArgs = [];
+        cmd.arguments.forEach((cmdArg) => {
+          cmdArgs.push(`<${cmdArg}>`);
+        });
+        const argumentList = cmdArgs.join(" ");
+
+        message.channel.send(
+          `Invalid Arguments. Use \`${bot.config.prefix}${cmd.name} ${argumentList}\``
+        );
+      }
 
       try {
         cmd.execute(message, bot);

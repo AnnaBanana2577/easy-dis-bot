@@ -1,15 +1,23 @@
 import sendEmbed from "../helpers/sendEmbed.js";
 
-export default function helpEmbed(message, args, bot) {
+export default function helpEmbed(message, command, args, bot) {
   //If 1 argument, display help for that command
   if (args.length == 1) {
-    //Add help for single command
+    let cmdArgs = [];
+    const cmd = bot.commands.indexOf(command);
+    cmd.arguments.forEach((cmdArg) => {
+      cmdArgs.push(`<${cmdArg}>`);
+    });
+    const argumentList = cmdArgs.join(" ");
+    message.channel.send(
+      `Invalid Arguments. Use \`${bot.config.prefix}${cmd.name} ${argumentList}\``
+    );
     return;
   }
 
   //If invalid Artguments
   if (args.length !== 0) {
-    sendEmbed(message, "Invalid Arguments", "Use `!help` or `!help <command>`");
+    message.channel.send("Invalid Arguments. Use `!help` or `!help <command>`");
     return;
   }
 
